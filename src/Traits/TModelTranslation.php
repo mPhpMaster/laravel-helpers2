@@ -1,9 +1,9 @@
 <?php
 /*
- * Copyright © 2022. mPhpMaster(https://github.com/mPhpMaster) All rights reserved.
+ * Copyright © 2023. mPhpMaster(https://github.com/mPhpMaster) All rights reserved.
  */
 
-namespace MPhpMaster\LaravelHelpers2\Traits;
+namespace MPhpMaster\LaravelNovaHelpers\Traits;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model

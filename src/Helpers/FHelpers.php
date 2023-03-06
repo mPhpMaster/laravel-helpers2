@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright © 2022. mPhpMaster(https://github.com/mPhpMaster) All rights reserved.
+ * Copyright © 2023. mPhpMaster(https://github.com/mPhpMaster) All rights reserved.
  */
 
 if( !defined('OPTION_NO_CHANGE') ) {

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright © 2022. mPhpMaster(https://github.com/mPhpMaster) All rights reserved.
+ * Copyright © 2023. mPhpMaster(https://github.com/mPhpMaster) All rights reserved.
  */
 
 use Illuminate\Database\Eloquent\Builder;
@@ -564,3 +564,112 @@ if( !function_exists('isUrl') ) {
         return true;
     }
 }
+
+if ( !function_exists('hasScope') ) {
+    /**
+     * Check if given class has the given scope name.
+     *
+     * @param mixed  $class     <p>
+     *                          Either a string containing the name of the class to
+     *                          check, or an object.
+     *                          </p>
+     * @param string $scopeName <p>
+     *                          Scope name to check
+     *                          </p>
+     *
+     * @return bool
+     */
+    function hasScope($class, $scopeName)
+    {
+        try {
+            $hasScopeRC = new ReflectionClass($class);
+            $scopeName = strtolower(studly_case($scopeName));
+            starts_with($scopeName, "scope") && ($scopeName = substr($scopeName, strlen("scope")));
+
+            $hasScope = collect($hasScopeRC->getMethods())->map(function ($c) use ($scopeName) {
+                    /**
+                     * @var $c ReflectionMethod
+                     */
+                    $name = strtolower(studly_case($c->getName()));
+                    $name = starts_with($name, "scope") ? substr($name, strlen("scope")) : false;
+
+                    return $name == $scopeName;
+                })->filter()->count() > 0;
+        } catch (ReflectionException $exception) {
+            $hasScope = false;
+        } catch (Exception $exception) {
+            $hasScope = false;
+        }
+
+        return !!$hasScope;
+    }
+}
+
+if ( !function_exists('hasConst') ) {
+    /**
+     * Check if given class has the given const.
+     *
+     * @param mixed  $class     <p>
+     *                          Either a string containing the name of the class to
+     *                          check, or an object.
+     *                          </p>
+     * @param string $const     <p>
+     *                          Const name to check
+     *                          </p>
+     *
+     * @return bool
+     */
+    function hasConst($class, $const): bool
+    {
+        $hasConst = false;
+        try {
+            if ( is_object($class) || is_string($class) ) {
+                $reflect = new ReflectionClass($class);
+                $hasConst = array_key_exists($const, $reflect->getConstants());
+            }
+        } catch (ReflectionException $exception) {
+            $hasConst = false;
+        } catch (Exception $exception) {
+            $hasConst = false;
+        }
+
+        return (bool)$hasConst;
+    }
+}
+
+if ( !function_exists('hasTrait') ) {
+    /**
+     * Check if given class has trait.
+     *
+     * @param mixed  $class     <p>
+     *                          Either a string containing the name of the class to
+     *                          check, or an object.
+     *                          </p>
+     * @param string $traitName <p>
+     *                          Trait name to check
+     *                          </p>
+     *
+     * @return bool
+     */
+    function hasTrait($class, $traitName)
+    {
+        try {
+            $traitName = str_contains($traitName, "\\") ? class_basename($traitName) : $traitName;
+
+            $hasTraitRC = new ReflectionClass($class);
+            $hasTrait = collect($hasTraitRC->getTraitNames())->map(function ($name) use ($traitName) {
+                    $name = str_contains($name, "\\") ? class_basename($name) : $name;
+
+                    return $name == $traitName;
+                })->filter()->count() > 0;
+        } catch (ReflectionException $exception) {
+            $hasTrait = false;
+        } catch (Exception $exception) {
+            d($exception->getMessage());
+            $hasTrait = false;
+        }
+
+        return $hasTrait;
+    }
+}
+

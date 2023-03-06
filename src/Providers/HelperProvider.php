@@ -1,9 +1,9 @@
 <?php /** @noinspection PhpIllegalPsrClassPathInspection */
 /*
- * Copyright © 2022. mPhpMaster(https://github.com/mPhpMaster) All rights reserved.
+ * Copyright © 2023. mPhpMaster(https://github.com/mPhpMaster) All rights reserved.
  */
 
-namespace MPhpMaster\LaravelHelpers2\Providers;
+namespace MPhpMaster\LaravelNovaHelpers\Providers;
 
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Routing\Router;
@@ -13,7 +13,7 @@ use Illuminate\Support\ServiceProvider;
 /**
  * Class HelperProvider
  *
- * @package MPhpMaster\LaravelAppHelpers\Providers
+ * @package MPhpMaster\LaravelNovaHelpers\Providers
  */
 class HelperProvider extends ServiceProvider
 {
@@ -40,6 +40,13 @@ class HelperProvider extends ServiceProvider
         require_once __DIR__ . '/../Helpers/FCheckers.php';
         require_once __DIR__ . '/../Helpers/FGetters.php';
         require_once __DIR__ . '/../Helpers/FHelpers.php';
+
+        \Illuminate\Database\Eloquent\Builder::macro('getSql', function(bool $parse = false) {
+            return getSql(
+                $this->getModel()->exists ? modelToQuery($this->getModel()) : $this,
+                $parse
+            );
+        });
     }
 
     /**

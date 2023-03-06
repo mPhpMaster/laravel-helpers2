@@ -1,6 +1,6 @@
 # Laravel Helpers2
 ###### Part of mphpmaster/laravel-helpers:^3
-<small>v1.0.0</small>
+<small>v1.1.0</small>
 
 ## Dependencies:
 * php >=8.1 **REQUIRED IN YOUR PROJECT**
@@ -15,11 +15,14 @@
 
 ## Content
 - Providers:
-    - `MPhpMaster\LaravelHelpers2\Providers\HelperProvider`.
+    - `MPhpMaster\LaravelNovaHelpers\Providers\HelperProvider`
 
 - Traits:
-  - `MPhpMaster\LaravelHelpers2\Traits\TModelTranslation`
-  - `MPhpMaster\LaravelHelpers2\Traits\TMacroable`
+  - `MPhpMaster\LaravelNovaHelpers\Traits\TModelTranslation`
+  - `MPhpMaster\LaravelNovaHelpers\Traits\TMacroable`
+
+- Macros:
+  - Add `getSql` metod to `Query Builder` and `Model`
 
 - Functions:
   - `isArrayableItems`
@@ -61,6 +64,11 @@
   - `getModel`
   - `getModelClass`
   - `getClass`
+  - `hasTrait`
+  - `hasScope`
+  - `hasConst`
+  - `getConst`
+  - `getSql`
   - `str_prefix`
   - `str_suffix`
   - `str_words_limit`
@@ -103,7 +111,6 @@
   - `when`
   - `whenInConsole`
   - `undot`
-
 
 > *Inspired by laravel/helpers.*
 

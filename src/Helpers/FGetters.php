@@ -1,9 +1,11 @@
 <?php
 /*
- * Copyright © 2022. mPhpMaster(https://github.com/mPhpMaster) All rights reserved.
+ * Copyright © 2023. mPhpMaster(https://github.com/mPhpMaster) All rights reserved.
  */
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 if( !function_exists('toCollect') ) {
     /**
@@ -248,6 +250,24 @@ if( !function_exists('getClass') ) {
         }
 
         return $object && is_string($object) && class_exists($object) ? $object : false;
+    }
+}
+
+if( !function_exists('getSql') ) {
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $builder
+     *
+     * @return string
+     */
+    function getSql(Builder|Relation|\Illuminate\Contracts\Database\Query\Builder $builder, bool $parse = false): string
+    {
+        $sql = sprintf(str_ireplace('?', "'%s'", $builder->toSql()), ...$builder->getBindings());
+
+        return !$parse ? $sql : replaceAll([
+                                               " or " => "\n\t\tor ",
+                                               " and " => "\n\t\tand ",
+                                               " where " => "\n\twhere ",
+                                           ], $sql);
     }
 }
 
@@ -716,5 +736,24 @@ if( !function_exists('getModelKey') ) {
         }
 
         return $object;
+    }
+}
+
+if ( !function_exists('getConst') ) {
+    /**
+     * Returns const value if exists, otherwise returns $default.
+     *
+     * @param string|array $const   <p>
+     *                              Const name to check
+     *                              </p>
+     * @param mixed|null   $default <p>
+     *                              Value to return when const not found
+     *                              </p>
+     *
+     * @return mixed
+     */
+    function getConst($const, $default = null)
+    {
+        return defined($const = is_array($const) ? implode("::", $const) : $const) ? constant($const) : $default;
     }
 }
