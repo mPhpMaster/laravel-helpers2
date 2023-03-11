@@ -3,7 +3,7 @@
  * Copyright © 2023. mPhpMaster(https://github.com/mPhpMaster) All rights reserved.
  */
 
-namespace MPhpMaster\LaravelNovaHelpers\Traits;
+namespace MPhpMaster\LaravelHelpers2\Traits;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model

@@ -3,7 +3,7 @@
  * Copyright © 2023. mPhpMaster(https://github.com/mPhpMaster) All rights reserved.
  */
 
-namespace MPhpMaster\LaravelNovaHelpers\Providers;
+namespace MPhpMaster\LaravelHelpers2\Providers;
 
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Routing\Router;
@@ -13,7 +13,7 @@ use Illuminate\Support\ServiceProvider;
 /**
  * Class HelperProvider
  *
- * @package MPhpMaster\LaravelNovaHelpers\Providers
+ * @package MPhpMaster\LaravelHelpers2\Providers
  */
 class HelperProvider extends ServiceProvider
 {
