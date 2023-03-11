@@ -3,17 +3,18 @@
  * Copyright © 2023. mPhpMaster(https://github.com/mPhpMaster) All rights reserved.
  */
 
-namespace MPhpMaster\LaravelHelpers2\Traits;
+namespace MPhpMaster\LaravelNovaHelpers\Traits;
 
 use BadMethodCallException;
 use Closure;
 use ReflectionClass;
 use ReflectionMethod;
 
+
 /**
  * Trait TMacroable
  *
- * @package MPhpMaster\LaravelHelpers2\Traits
+ * @package MPhpMaster\LaravelNovaHelpers\Traits
  */
 trait TMacroable
 {
