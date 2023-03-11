@@ -3,7 +3,7 @@
  * Copyright © 2023. mPhpMaster(https://github.com/mPhpMaster) All rights reserved.
  */
 
-namespace MPhpMaster\LaravelNovaHelpers\Traits;
+namespace MPhpMaster\LaravelHelpers2\Traits;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model
@@ -73,6 +73,11 @@ trait TModelTranslation
             }
         }
         $result ??= value($default);
+        if( $result === $key )
+        {
+            $result = $result === 'plural' ? str_plural($model) : str_singular($model);
+            $result = \Str::headline($result);
+        }
 
         return $result;
     }

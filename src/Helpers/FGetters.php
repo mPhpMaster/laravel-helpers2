@@ -757,3 +757,15 @@ if ( !function_exists('getConst') ) {
         return defined($const = is_array($const) ? implode("::", $const) : $const) ? constant($const) : $default;
     }
 }
+
+if (!function_exists('getLocales')) {
+    /**
+     * @return array
+     */
+    function getLocales(bool $withNames = false): array
+    {
+        $locales = config('app.locales', []);
+
+        return $withNames ? array_flip($locales) : array_keys($locales);
+    }
+}

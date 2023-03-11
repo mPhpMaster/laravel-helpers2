@@ -673,3 +673,14 @@ if ( !function_exists('hasTrait') ) {
     }
 }
 
+if (!function_exists('isLocaleAllowed')) {
+    /**
+     * @param string|\Closure $locale
+     *
+     * @return bool
+     */
+    function isLocaleAllowed($locale): bool
+    {
+        return array_key_exists($locale, array_flip(getLocales(true)));
+    }
+}

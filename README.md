@@ -1,6 +1,6 @@
 # Laravel Helpers2
 ###### Part of mphpmaster/laravel-helpers:^3
-<small>v1.1.0</small>
+<small>v1.2.0</small>
 
 ## Dependencies:
 * php >=8.1 **REQUIRED IN YOUR PROJECT**
@@ -15,14 +15,16 @@
 
 ## Content
 - Providers:
-    - `MPhpMaster\LaravelNovaHelpers\Providers\HelperProvider`
+    - `MPhpMaster\LaravelHelpers2\Providers\HelperProvider`
 
 - Traits:
-  - `MPhpMaster\LaravelNovaHelpers\Traits\TModelTranslation`
-  - `MPhpMaster\LaravelNovaHelpers\Traits\TMacroable`
+  - `MPhpMaster\LaravelHelpers2\Traits\TModelTranslation`
+  - `MPhpMaster\LaravelHelpers2\Traits\TMacroable`
 
 - Macros:
-  - Add `getSql` metod to `Query Builder` and `Model`
+  - Add `getSql` method to `Query Builder` and `Model`
+  - Add `paginate` method to `Collection`
+  - Add `mergeIfMissing` method to `Collection`
 
 - Functions:
   - `isArrayableItems`
@@ -40,6 +42,7 @@
   - `isPaginated`
   - `isConsole`
   - `isBuilder`
+  - `isLocaleAllowed`
   - `endsWithAny`
   - `isModel`
   - `isRelation`
@@ -69,6 +72,7 @@
   - `hasConst`
   - `getConst`
   - `getSql`
+  - `getLocales`
   - `str_prefix`
   - `str_suffix`
   - `str_words_limit`
@@ -111,6 +115,16 @@
   - `when`
   - `whenInConsole`
   - `undot`
+
+## To add:
+  - Add `locales` key to `config/app.php`  
+```php
+// example:
+    'locales' => [
+        'en' => 'English',
+        'ar' => 'عربي',
+    ],
+```
 
 > *Inspired by laravel/helpers.*
 
