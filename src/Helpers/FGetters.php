@@ -7,41 +7,41 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
-if( !function_exists('toCollect') ) {
+if (!function_exists('toCollect')) {
     /**
      * Returns $var as collection if it wasn't collection
      *
      * @param mixed $var
-     * @param bool  $allow_arrayable when isArrayable($var) wrap it with array
+     * @param bool $allow_arrayable when isArrayable($var) wrap it with array
      *
      * @return \Illuminate\Support\Collection
      */
     function toCollect($var, bool $allow_arrayable = false): \Illuminate\Support\Collection
     {
-        $var = !$allow_arrayable && isArrayable($var) ? [ $var ] : $var;
+        $var = !$allow_arrayable && (isArrayable($var) && !is_collection($var)) ? [$var] : $var;
 
         return is_collection($var) ? $var : collect($var);
     }
 }
 
-if( !function_exists('toCollectWithModel') ) {
+if (!function_exists('toCollectWithModel')) {
     /**
      * Returns $var as collection, if the given var is model ? return collect([model])
      *
      * @param mixed $var
-     * @param bool  $allow_arrayable when isArrayable($var) wrap it with array
+     * @param bool $allow_arrayable when isArrayable($var) wrap it with array
      *
      * @return \Illuminate\Support\Collection
      */
     function toCollectWithModel($var, bool $allow_arrayable = true): \Illuminate\Support\Collection
     {
-        $var = $var instanceof \Illuminate\Database\Eloquent\Model ? [ $var ] : $var;
+        $var = $var instanceof \Illuminate\Database\Eloquent\Model ? [$var] : $var;
 
         return toCollect($var, $allow_arrayable);
     }
 }
 
-if( !function_exists('toCollectOrModel') ) {
+if (!function_exists('toCollectOrModel')) {
     /**
      * Returns $var as collection, if the given var is model ? return model
      *
@@ -55,7 +55,7 @@ if( !function_exists('toCollectOrModel') ) {
     }
 }
 
-if( !function_exists('toObjectOrModel') ) {
+if (!function_exists('toObjectOrModel')) {
     /**
      * Returns $var as Object, if the given var is model ? return model
      *
@@ -69,13 +69,13 @@ if( !function_exists('toObjectOrModel') ) {
     }
 }
 
-if( !function_exists('str_before_last_count') ) {
+if (!function_exists('str_before_last_count')) {
     /**
      * Get the portion of a string before the last occurrence of a given value for X times.
      *
      * @param string $subject
      * @param string $search
-     * @param int    $times
+     * @param int $times
      *
      * @return string
      */
@@ -83,7 +83,7 @@ if( !function_exists('str_before_last_count') ) {
     {
         $times = $times > 0 ? $times : 0;
         $result = $subject;
-        while( $times && $times-- ) {
+        while ($times && $times--) {
             $result = \Illuminate\Support\Str::beforeLast($result, $search);
         }
 
@@ -91,7 +91,7 @@ if( !function_exists('str_before_last_count') ) {
     }
 }
 
-if( !function_exists('getTable') ) {
+if (!function_exists('getTable')) {
     /**
      * Returns Model table name.
      *
@@ -101,7 +101,7 @@ if( !function_exists('getTable') ) {
      */
     function getTable(string $model): ?string
     {
-        if( $model && class_exists($model) ) {
+        if ($model && class_exists($model)) {
             $class = new $model;
 
             /** @var $class \Illuminate\Database\Eloquent\Model */
@@ -112,7 +112,7 @@ if( !function_exists('getTable') ) {
     }
 }
 
-if( !function_exists('getFillable') ) {
+if (!function_exists('getFillable')) {
     /**
      * Returns Model Fillable.
      *
@@ -122,7 +122,7 @@ if( !function_exists('getFillable') ) {
      */
     function getFillable(string $model): ?array
     {
-        if( $model && class_exists($model) ) {
+        if ($model && class_exists($model)) {
             $class = new $model;
 
             /** @var $class \Illuminate\Database\Eloquent\Model */
@@ -133,7 +133,7 @@ if( !function_exists('getFillable') ) {
     }
 }
 
-if( !function_exists('getHidden') ) {
+if (!function_exists('getHidden')) {
     /**
      * Returns Model hidden.
      *
@@ -143,7 +143,7 @@ if( !function_exists('getHidden') ) {
      */
     function getHidden(string $model): ?array
     {
-        if( $model && class_exists($model) ) {
+        if ($model && class_exists($model)) {
             $class = new $model;
 
             /** @var $class \Illuminate\Database\Eloquent\Model */
@@ -154,7 +154,7 @@ if( !function_exists('getHidden') ) {
     }
 }
 
-if( !function_exists('getModel') ) {
+if (!function_exists('getModel')) {
     /**
      * Returns model/class of query|model|string.
      *
@@ -165,22 +165,22 @@ if( !function_exists('getModel') ) {
     function getModel($model)
     {
         try {
-            if( is_object($model) && method_exists($model, 'getModel') ) {
+            if (is_object($model) && method_exists($model, 'getModel')) {
                 /** @var \Illuminate\Database\Eloquent\Builder */
                 return $model->getModel();
             }
             throw new Exception($model);
-        } catch(Exception $exception) {
+        } catch (Exception $exception) {
             try {
-                if( is_object($model) && method_exists($model, 'getQuery') ) {
+                if (is_object($model) && method_exists($model, 'getQuery')) {
                     /** @var \Illuminate\Database\Eloquent\Model */
                     return $model->getQuery()->getModel();
                 }
                 throw new Exception($model);
-            } catch(Exception $exception2) {
+            } catch (Exception $exception2) {
                 try {
                     return getModelClass($model);
-                } catch(Exception $exception3) {
+                } catch (Exception $exception3) {
 
                 }
             }
@@ -190,7 +190,7 @@ if( !function_exists('getModel') ) {
     }
 }
 
-if( !function_exists('getModelClass') ) {
+if (!function_exists('getModelClass')) {
     /**
      * Returns model class of query|model|string.
      *
@@ -202,14 +202,14 @@ if( !function_exists('getModelClass') ) {
     {
         try {
             $_model = !is_string($model) ? getClass($model) : $model;
-            if( !class_exists($_model) ) {
-                if( !class_exists($__model = "\\App\\Models\\{$_model}") ) {
+            if (!class_exists($_model)) {
+                if (!class_exists($__model = "\\App\\Models\\{$_model}")) {
                     try {
                         $__model = getClass(app($_model));
-                    } catch(\Exception $exception2) {
+                    } catch (\Exception $exception2) {
                         try {
                             $__model = function_exists('getRealClassName') ? getRealClassName($_model) : $_model;
-                        } catch(\Exception $exception3) {
+                        } catch (\Exception $exception3) {
                             $__model = null;
                         }
                     }
@@ -217,11 +217,11 @@ if( !function_exists('getModelClass') ) {
 
                 $_model = trim($__model && is_string($__model) ? $__model : getClass($__model));
             }
-        } catch(Exception $exception1) {
+        } catch (Exception $exception1) {
 
         }
 
-        if( $_model ) {
+        if ($_model) {
             $_model = isModel($_model) ? $_model : null;
         }
 
@@ -231,7 +231,7 @@ if( !function_exists('getModelClass') ) {
     }
 }
 
-if( !function_exists('getClass') ) {
+if (!function_exists('getClass')) {
     /**
      * Returns the name of the class of an object
      *
@@ -245,7 +245,7 @@ if( !function_exists('getClass') ) {
      */
     function getClass($object): string|false
     {
-        if( is_object($object) ) {
+        if (is_object($object)) {
             return get_class(valueToObject($object));
         }
 
@@ -253,7 +253,7 @@ if( !function_exists('getClass') ) {
     }
 }
 
-if( !function_exists('getSql') ) {
+if (!function_exists('getSql')) {
     /**
      * @param \Illuminate\Database\Eloquent\Builder $builder
      *
@@ -264,21 +264,21 @@ if( !function_exists('getSql') ) {
         $sql = sprintf(str_ireplace('?', "'%s'", $builder->toSql()), ...$builder->getBindings());
 
         return !$parse ? $sql : replaceAll([
-                                               " or " => "\n\t\tor ",
-                                               " and " => "\n\t\tand ",
-                                               " where " => "\n\twhere ",
-                                           ], $sql);
+            " or " => "\n\t\tor ",
+            " and " => "\n\t\tand ",
+            " where " => "\n\twhere ",
+        ], $sql);
     }
 }
 
-if( !function_exists('str_prefix') ) {
+if (!function_exists('str_prefix')) {
     /**
      * Add a prefix to string but only if string2 is not empty.
      *
      * @alias prefixText
      *
-     * @param string      $string  string to prefix
-     * @param string      $prefix  prefix
+     * @param string $string string to prefix
+     * @param string $prefix prefix
      * @param string|null $string2 string2 to prefix the return
      *
      * @return string|null
@@ -293,12 +293,12 @@ if( !function_exists('str_prefix') ) {
     }
 }
 
-if( !function_exists('str_suffix') ) {
+if (!function_exists('str_suffix')) {
     /**
      * Add a suffix to string but only if string2 is not empty.
      *
-     * @param string      $string  string to suffix
-     * @param string      $suffix  suffix
+     * @param string $string string to suffix
+     * @param string $suffix suffix
      * @param string|null $string2 string2 to suffix the return
      *
      * @return string|null
@@ -311,12 +311,12 @@ if( !function_exists('str_suffix') ) {
     }
 }
 
-if( !function_exists('str_words_limit') ) {
+if (!function_exists('str_words_limit')) {
     /**
      * Limit string words.
      *
-     * @param string      $string string to limit
-     * @param int         $limit  word limit
+     * @param string $string string to limit
+     * @param int $limit word limit
      * @param string|null $suffix suffix the string
      *
      * @return string
@@ -332,9 +332,9 @@ if( !function_exists('str_words_limit') ) {
         $return = substr($string, 0, stripos($string, $lastWord) + strlen($lastWord)) . ' ' . $suffix;
 
         $m = [];
-        if( preg_match_all('#<(\w+).+?#is', $return, $m) ) {
-            $m = is_array($m) && is_array($m[ 1 ]) ? array_reverse($m[ 1 ]) : [];
-            foreach( $m as $HTMLTAG ) {
+        if (preg_match_all('#<(\w+).+?#is', $return, $m)) {
+            $m = is_array($m) && is_array($m[1]) ? array_reverse($m[1]) : [];
+            foreach ($m as $HTMLTAG) {
                 $return .= "</{$HTMLTAG}>";
             }
         }
@@ -343,14 +343,14 @@ if( !function_exists('str_words_limit') ) {
     }
 }
 
-if( !function_exists('prefixNumber') ) {
+if (!function_exists('prefixNumber')) {
     /**
      * like:
      * Number: 0001
      *
-     * @param float  $value
+     * @param float $value
      * @param string $prefix
-     * @param int    $length
+     * @param int $length
      *
      * @return string
      */
@@ -362,7 +362,7 @@ if( !function_exists('prefixNumber') ) {
     }
 }
 
-if( !function_exists('prefixText') ) {
+if (!function_exists('prefixText')) {
     /**
      * like:
      * Text:
@@ -372,8 +372,8 @@ if( !function_exists('prefixText') ) {
      *
      * @param string $value
      * @param string $prefix
-     * @param int    $length
-     * @param int    $pad_type [optional] <p>
+     * @param int $length
+     * @param int $pad_type [optional] <p>
      *                         Optional argument pad_type can be
      *                         STR_PAD_RIGHT, STR_PAD_LEFT,
      *                         or STR_PAD_BOTH. If
@@ -389,7 +389,7 @@ if( !function_exists('prefixText') ) {
     }
 }
 
-if( !function_exists('countToken') ) {
+if (!function_exists('countToken')) {
     /**
      * Return count of the given token.
      *
@@ -400,7 +400,7 @@ if( !function_exists('countToken') ) {
      */
     function countToken(string $token, string $subject): int
     {
-        if( empty(trim($token)) || empty(trim($subject)) ) {
+        if (empty(trim($token)) || empty(trim($subject))) {
             return 0;
         }
 
@@ -408,12 +408,12 @@ if( !function_exists('countToken') ) {
     }
 }
 
-if( !function_exists('replaceTokens') ) {
+if (!function_exists('replaceTokens')) {
     /**
      * Replace the tokens in string
      *
      * @param string $_subject
-     * @param array  $values [ token => value ]
+     * @param array $values [ token => value ]
      * @param string $token_prefix
      * @param string $token_suffix
      *
@@ -422,34 +422,35 @@ if( !function_exists('replaceTokens') ) {
     function replaceTokens(string $_subject, array $values = [], string $token_prefix = "{", string $token_suffix = "}"): string
     {
         $subject = $_subject;
-        foreach( $values as $token => $value ) {
+        foreach ($values as $token => $value) {
             $_token = "{$token_prefix}{$token}{$token_suffix}";
             $subject = replaceAll([
-                                      $_token => $value,
-                                  ], $subject);
+                $_token => $value,
+            ], $subject);
         }
 
         return $subject;
     }
 }
 
-if( !function_exists('getTrans') ) {
+if (!function_exists('getTrans')) {
     /**
      * Translate the given message or return default.
      *
      * @param string|\Closure|null $key
      * @param string|\Closure|null $default
-     * @param array                $replace
-     * @param string|null          $locale
+     * @param array $replace
+     * @param string|null $locale
      *
      * @return string|array|null
      */
     function getTrans(
         string|\Closure|null $key = null,
-        string|Closure|null $default = null,
-        array $replace = [],
-        string|null $locale = null
-    ): array|string|null {
+        string|Closure|null  $default = null,
+        array                $replace = [],
+        string|null          $locale = null
+    ): array|string|null
+    {
         $key = value($key);
         $return = __($key, $replace, $locale);
 
@@ -457,7 +458,7 @@ if( !function_exists('getTrans') ) {
     }
 }
 
-if( !function_exists('getNumbers') ) {
+if (!function_exists('getNumbers')) {
     /**
      * Returns Numbers only from the given string
      *
@@ -471,7 +472,7 @@ if( !function_exists('getNumbers') ) {
     }
 }
 
-if( !function_exists('getArrayableItems') ) {
+if (!function_exists('getArrayableItems')) {
     /**
      * Results array of items from Collection, Arrayable, Allable, Jsonable, JsonSerializable, Traversable or array.
      *
@@ -481,27 +482,27 @@ if( !function_exists('getArrayableItems') ) {
      */
     function getArrayableItems($items): array
     {
-        if( isArrayableItems($items) ) {
-            if( is_array($items) ) {
+        if (isArrayableItems($items)) {
+            if (is_array($items)) {
                 return $items;
-            } elseif( $items instanceof Arrayable || $items instanceof \Illuminate\Contracts\Support\Arrayable || isArrayable($items) ) {
+            } elseif ($items instanceof Arrayable || $items instanceof \Illuminate\Contracts\Support\Arrayable || isArrayable($items)) {
                 return $items->toArray();
-            } elseif( $items instanceof \Illuminate\Support\Enumerable || isAllable($items) ) {
+            } elseif ($items instanceof \Illuminate\Support\Enumerable || isAllable($items)) {
                 return $items->all();
-            } elseif( $items instanceof Jsonable || $items instanceof \Illuminate\Contracts\Support\Jsonable || isJsonable($items) ) {
+            } elseif ($items instanceof Jsonable || $items instanceof \Illuminate\Contracts\Support\Jsonable || isJsonable($items)) {
                 return json_decode($items->toJson(), true);
-            } elseif( $items instanceof JsonSerializable || isJsonSerializable($items) ) {
-                return (array) $items->jsonSerialize();
-            } elseif( $items instanceof Traversable ) {
+            } elseif ($items instanceof JsonSerializable || isJsonSerializable($items)) {
+                return (array)$items->jsonSerialize();
+            } elseif ($items instanceof Traversable) {
                 return iterator_to_array($items);
             }
         }
 
-        return (array) $items;
+        return (array)$items;
     }
 }
 
-if( !function_exists('valueToDate') ) {
+if (!function_exists('valueToDate')) {
     /**
      * Returns value as date format
      *
@@ -515,7 +516,7 @@ if( !function_exists('valueToDate') ) {
     }
 }
 
-if( !function_exists('valueToDateTime') ) {
+if (!function_exists('valueToDateTime')) {
     /**
      * Returns value as date and time format
      *
@@ -529,18 +530,18 @@ if( !function_exists('valueToDateTime') ) {
     }
 }
 
-if( !function_exists('valueToArray') ) {
+if (!function_exists('valueToArray')) {
     /**
      * Returns value as Array
      *
      * @param string|mixed $value
-     * @param bool         $forceToArray
+     * @param bool $forceToArray
      *
      * @return null|array
      */
     function valueToArray($value, bool $forceToArray = false): ?array
     {
-        if( $value instanceof Traversable ) {
+        if ($value instanceof Traversable) {
             return iterator_to_array($value);
         }
         $collect = toCollect($value, true);
@@ -549,7 +550,7 @@ if( !function_exists('valueToArray') ) {
     }
 }
 
-if( !function_exists('valueToUnDotArray') ) {
+if (!function_exists('valueToUnDotArray')) {
     /**
      * Returns value as Array. (Array undot)
      *
@@ -561,7 +562,7 @@ if( !function_exists('valueToUnDotArray') ) {
     {
         $array = [];
 
-        collect($value)->mapWithKeys(function($value, $key) use (&$array) {
+        collect($value)->mapWithKeys(function ($value, $key) use (&$array) {
             return array_set($array, $key, $value);
         });
 
@@ -569,12 +570,12 @@ if( !function_exists('valueToUnDotArray') ) {
     }
 }
 
-if( !function_exists('valueToDotArray') ) {
+if (!function_exists('valueToDotArray')) {
     /**
      * Flatten a multi-dimensional associative array with dots.
      *
      * @param iterable $array
-     * @param string   $prepend
+     * @param string $prepend
      *
      * @return array
      */
@@ -582,11 +583,11 @@ if( !function_exists('valueToDotArray') ) {
     {
         $results = [];
 
-        foreach( (array) $array as $key => $value ) {
-            if( !empty($value) && is_array($value) ) {
+        foreach ((array)$array as $key => $value) {
+            if (!empty($value) && is_array($value)) {
                 $results[] = valueToDotArray($value, $prepend . $key . '.');
             } else {
-                $results[] = [ $prepend . $key => $value ];
+                $results[] = [$prepend . $key => $value];
             }
         }
 
@@ -594,7 +595,7 @@ if( !function_exists('valueToDotArray') ) {
     }
 }
 
-if( !function_exists('valueToObject') ) {
+if (!function_exists('valueToObject')) {
     /**
      * Cast value as Object
      *
@@ -604,16 +605,16 @@ if( !function_exists('valueToObject') ) {
      */
     function valueToObject($value): object
     {
-        return (object) $value;
+        return (object)$value;
     }
 }
 
-if( !function_exists('valueFromJson') ) {
+if (!function_exists('valueFromJson')) {
     /**
      * @alias json_decode
      *
      * @param string|null $_data
-     * @param null|mixed  $default
+     * @param null|mixed $default
      *
      * @return array|mixed
      */
@@ -621,7 +622,7 @@ if( !function_exists('valueFromJson') ) {
     {
         try {
             $data = json_decode($_data, true, 512, JSON_THROW_ON_ERROR);
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             $data = value($default ?? false);
         }
 
@@ -629,13 +630,13 @@ if( !function_exists('valueFromJson') ) {
     }
 }
 
-if( !function_exists('valueToJson') ) {
+if (!function_exists('valueToJson')) {
     /**
      * @alias json_encode
      *
      * @param array|string|null $_data
-     * @param mixed|null        $default
-     * @param int               $options
+     * @param mixed|null $default
+     * @param int $options
      *
      * @return string|mixed
      */
@@ -644,7 +645,7 @@ if( !function_exists('valueToJson') ) {
         $_data = is_string($_data) ? valueFromJson($_data, $_data) : $_data;
         try {
             $data = json_encode($_data, $options);
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             $data = value($default ?? false);
         }
 
@@ -652,7 +653,7 @@ if( !function_exists('valueToJson') ) {
     }
 }
 
-if( !function_exists('getValue') ) {
+if (!function_exists('getValue')) {
     /**
      * Return the default value of the given value.
      *
@@ -668,7 +669,7 @@ if( !function_exists('getValue') ) {
     }
 }
 
-if( !function_exists('arrayToObject') ) {
+if (!function_exists('arrayToObject')) {
     /**
      * Returns array as Object
      *
@@ -678,13 +679,13 @@ if( !function_exists('arrayToObject') ) {
      */
     function arrayToObject($value): object
     {
-        if( is_object($value) || is_array($value) ) {
-            return (object) json_decode(json_encode($value));
+        if (is_object($value) || is_array($value)) {
+            return (object)json_decode(json_encode($value));
         }
 
-        $object = (object) [];
-        foreach( (array) $value as $key => $item ) {
-            if( is_array($item) ) {
+        $object = (object)[];
+        foreach ((array)$value as $key => $item) {
+            if (is_array($item)) {
                 $object->$key = arrayToObject($item);
             } else {
                 $object->$key = $item;
@@ -695,7 +696,7 @@ if( !function_exists('arrayToObject') ) {
     }
 }
 
-if( !function_exists('arrayToStdClass') ) {
+if (!function_exists('arrayToStdClass')) {
     /**
      * Returns value as Object
      *
@@ -707,7 +708,7 @@ if( !function_exists('arrayToStdClass') ) {
     {
         $stdClass = new \stdClass;
         $item = null;
-        foreach( $value as $key => &$item ) {
+        foreach ($value as $key => &$item) {
             $stdClass->$key = is_array($item) ? arrayToStdClass($item) : $item;
         }
         unset($item);
@@ -716,7 +717,7 @@ if( !function_exists('arrayToStdClass') ) {
     }
 }
 
-if( !function_exists('getModelKey') ) {
+if (!function_exists('getModelKey')) {
     /**
      * Returns Model Key Only!
      *
@@ -726,9 +727,9 @@ if( !function_exists('getModelKey') ) {
      */
     function getModelKey($object): mixed
     {
-        if( isModel($object) ) {
+        if (isModel($object)) {
             $key = $object->getKeyName() ?: 'id';
-            if( !($return = ($object->getKey() ?: $object->{$key})) ) {
+            if (!($return = ($object->getKey() ?: $object->{$key}))) {
                 $return = object_get($object, $key) ?: array_get($object->toArray(), $key);
             }
 
@@ -739,14 +740,14 @@ if( !function_exists('getModelKey') ) {
     }
 }
 
-if ( !function_exists('getConst') ) {
+if (!function_exists('getConst')) {
     /**
      * Returns const value if exists, otherwise returns $default.
      *
-     * @param string|array $const   <p>
+     * @param string|array $const <p>
      *                              Const name to check
      *                              </p>
-     * @param mixed|null   $default <p>
+     * @param mixed|null $default <p>
      *                              Value to return when const not found
      *                              </p>
      *
