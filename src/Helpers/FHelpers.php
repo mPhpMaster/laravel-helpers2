@@ -9,13 +9,13 @@ if( !defined('OPTION_NO_CHANGE') ) {
 
 if( !function_exists( 'trimDirectorySeparator') ) {
     /**
-     * @param string $path
+     * @param string|null $path
      *
      * @return string
      */
-    function trimDirectorySeparator(string $path): string
+    function trimDirectorySeparator(?string $path): string
     {
-        return trim($path, DIRECTORY_SEPARATOR);
+        return trim($path ?? "", DIRECTORY_SEPARATOR);
     }
 }
 
