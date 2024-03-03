@@ -1,6 +1,6 @@
 {
   "name": "mphpmaster/laravel-helpers2",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Laravel Helpers2",
   "type": "library",
   "keywords": [
@@ -9,8 +9,8 @@
   ],
   "require": {
     "php": ">=8.1",
-    "laravel/framework": ">=9",
-    "illuminate/support": ">=9",
+    "laravel/framework": ">=8",
+    "illuminate/support": ">=8",
     "laravel/helpers": "^1.5"
   },
   "license": "MIT",

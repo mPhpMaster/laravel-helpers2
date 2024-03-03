@@ -1,11 +1,11 @@
 # Laravel Helpers2
 ###### Part of mphpmaster/laravel-helpers:^3
-<small>v1.2.4</small>
+<small>v1.2.5</small>
 
 ## Dependencies:
 * php >=8.1 **REQUIRED IN YOUR PROJECT**
-* laravel >=9 **REQUIRED IN YOUR PROJECT**
-* illuminate/support >=9 _composer will install it automaticly_
+* laravel >=8 **REQUIRED IN YOUR PROJECT**
+* illuminate/support >=8 _composer will install it automaticly_
 * laravel/helpers ^1.5 _composer will install it automaticly_
 
 ## Installation:
